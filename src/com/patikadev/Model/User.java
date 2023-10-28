@@ -155,6 +155,9 @@ public class User {
                     case "operator":
                         obj = new Operator();
                         break;
+                    case "educator":
+                        obj = new Educator();
+                        break;
                     default:
                         obj = new User();
                 }

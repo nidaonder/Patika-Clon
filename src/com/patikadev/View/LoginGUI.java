@@ -2,6 +2,7 @@ package com.patikadev.View;
 
 import com.patikadev.Helper.Config;
 import com.patikadev.Helper.Helper;
+import com.patikadev.Model.Educator;
 import com.patikadev.Model.Operator;
 import com.patikadev.Model.User;
 
@@ -34,15 +35,20 @@ public class LoginGUI extends JFrame{
                 if (u == null){
                     Helper.showMessage("User not found!");
                 } else {
+
+                    OperatorGUI opGUI = null;
+                    EducatorGUI edGUI = null;
+                    StudentGUI stGUI = null;
+
                     switch (u.getType()){
                         case "operator":
-                            OperatorGUI opGUI = new OperatorGUI((Operator) u);
+                            opGUI = new OperatorGUI((Operator) u);
                             break;
                         case "educator":
-                            EducatorGUI edGUI = new EducatorGUI();
+                            edGUI = new EducatorGUI((Educator) u);
                             break;
                         case "student":
-                            StudentGUI stGUI = new StudentGUI();
+                            stGUI = new StudentGUI();
                             break;
                     }
                     dispose();
