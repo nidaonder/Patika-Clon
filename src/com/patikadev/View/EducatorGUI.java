@@ -8,8 +8,11 @@ import javax.swing.*;
 
 public class EducatorGUI extends JFrame {
     private JPanel wrapper;
-    private JButton btn_logout;
+    private JTabbedPane tab_educator;
     private JLabel lbl_welcome;
+    private JPanel pnl_top;
+    private JButton btn_logout;
+    private JPanel pnl_courses_list;
 
     private final Educator educator;
 
@@ -23,7 +26,8 @@ public class EducatorGUI extends JFrame {
         setTitle(Config.PROJECT_TITLE);
         setVisible(true);
 
-        lbl_welcome.setText("Welcome, " + educator.getName());
+        lbl_welcome.setText("Welcome " + educator.getName());
+
     }
 
     public Educator getEducator() {
