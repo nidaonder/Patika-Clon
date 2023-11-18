@@ -98,7 +98,6 @@ public class Patika {
                 Course.delete(obj.getId());
             }
         }
-
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
             pr.setInt(1,id);

@@ -59,6 +59,7 @@ public class OperatorGUI extends JFrame {
     private JPopupMenu patikaMenu;
     private DefaultTableModel mdl_course_list;
     private Object[] row_course_list;
+    private JPopupMenu courseMenu;
 
 
 
@@ -94,7 +95,6 @@ public class OperatorGUI extends JFrame {
         loadUserModel();
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
-
         tbl_user_list.getSelectionModel().addListSelectionListener(e -> {
             try {
                 String select_user_id = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 0).toString();
@@ -124,12 +124,12 @@ public class OperatorGUI extends JFrame {
 
         // PatikaList
         patikaMenu = new JPopupMenu();
-        JMenuItem updateMenu = new JMenuItem("Update");
-        JMenuItem deleteMenu = new JMenuItem("Delete");
-        patikaMenu.add(updateMenu);
-        patikaMenu.add(deleteMenu);
+        JMenuItem updatePatikaMenu = new JMenuItem("Update");
+        JMenuItem deletePatikaMenu = new JMenuItem("Delete");
+        patikaMenu.add(updatePatikaMenu);
+        patikaMenu.add(deletePatikaMenu);
 
-        updateMenu.addActionListener(e -> {
+        updatePatikaMenu.addActionListener(e -> {
             int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString());
             UpdatePatikaGUI updateGUI = new UpdatePatikaGUI(Patika.getFetch(select_id));
             updateGUI.addWindowListener(new WindowAdapter() {
@@ -142,7 +142,7 @@ public class OperatorGUI extends JFrame {
             });
         });
 
-        deleteMenu.addActionListener(e -> {
+        deletePatikaMenu.addActionListener(e -> {
             if (Helper.confirm("sure")){
                 int select_id = Integer.parseInt(tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString());
                 if (Patika.delete(select_id)){
@@ -178,16 +178,58 @@ public class OperatorGUI extends JFrame {
         // ## PatikaList
 
         // CourseList
+        courseMenu = new JPopupMenu();
+        JMenuItem updateCourseMenu = new JMenuItem("Update");
+        JMenuItem deleteCourseMenu = new JMenuItem("Delete");
+        courseMenu.add(updateCourseMenu);
+        courseMenu.add(deleteCourseMenu);
+
+        updateCourseMenu.addActionListener(e -> {
+            int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
+            UpdateCourseGUI updateCourseGUI = new UpdateCourseGUI(Course.getFetch(select_id));
+            updateCourseGUI.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    loadCourseModel();
+                }
+            });
+        });
+
+        deleteCourseMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Helper.confirm("sure")){
+                    int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
+                    if (Course.delete(select_id)){
+                        Helper.showMessage("done");
+                        loadCourseModel();
+                    } else {
+                        Helper.showMessage("error");
+                    }
+                }
+            }
+        });
+        //## CourseList
+
         mdl_course_list = new DefaultTableModel();
         Object[] col_courseList = {"ID", "Course Name", "Programming Language", "Patika", "Educator"};
         mdl_course_list.setColumnIdentifiers(col_courseList);
         row_course_list = new Object[col_courseList.length];
         loadCourseModel();
         tbl_course_list.setModel(mdl_course_list);
+        tbl_course_list.setComponentPopupMenu(courseMenu);
         tbl_course_list.getColumnModel().getColumn(0).setMaxWidth(75);
         tbl_course_list.getTableHeader().setReorderingAllowed(false);
         loadPatikaCombo();
         loadEducatorCombo();
+        tbl_course_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selected_row = tbl_course_list.rowAtPoint(point);
+                tbl_course_list.setRowSelectionInterval(selected_row, selected_row);
+            }
+        });
         // ## CourseList
 
         btn_user_add.addActionListener(e -> {

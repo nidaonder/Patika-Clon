@@ -160,6 +160,7 @@ public class User {
                         break;
                     default:
                         obj = new User();
+                        break;
                 }
                 obj.setId(rs.getInt("id"));
                 obj.setName(rs.getString("name"));
