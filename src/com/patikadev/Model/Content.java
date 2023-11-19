@@ -30,8 +30,7 @@ public class Content {
         this.course = Course.getFetch(course_id);
     }
 
-    public Content() {
-    }
+    public Content() {}
 
     public int getEdu_id() {
         return edu_id;
@@ -83,7 +82,6 @@ public class Content {
 
     public static ArrayList<Content> getList(){
         ArrayList<Content> contentArrayList = new ArrayList<>();
-
         Content obj;
         try {
             Statement st = DBConnector.getInstance().createStatement();
@@ -104,6 +102,24 @@ public class Content {
         return contentArrayList;
     }
 
+    public static Content getFetch(int id){
+        Content obj = null;
+        String query = "SELECT * FROM content WHERE id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1, id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()){
+                obj = new Content(rs.getInt("id"), rs.getInt("edu_id"),
+                        rs.getInt("course_id"), rs.getString("title"),
+                        rs.getString("yt_link"), rs.getString("explanation"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return obj;
+    }
+
     public static boolean add(int edu_id, int course_id, String title, String yt_link, String explanation){
         String query = "INSERT INTO content (edu_id, course_id, title, yt_link, explanation) VALUES (?,?,?,?,?)";
         try {
@@ -120,7 +136,39 @@ public class Content {
         return true;
     }
 
-/*       SEARCH ETME----------------------------------------------
+    public static boolean delete(int id){
+        String query = "DELETE FROM content WHERE id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1, id);
+            return  pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean update(int id, int eduId, int courseId, String title, String ytLink, String explanation){
+        String query = "UPDATE content SET edu_id = ?, course_id = ?, title = ?, yt_link = ?, explanation = ? WHERE id = ?";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setInt(1, eduId);
+            pr.setInt(2, courseId);
+            pr.setString(3, title);
+            pr.setString(4, ytLink);
+            pr.setString(5, explanation);
+            pr.setInt(6, id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String searchQuery(String title){
+        String query = "SELECT * FROM content WHERE title LIKE '%{{title}}%'";
+        query = query.replace("{{title}}", title);
+        return query;
+    }
+
     public static ArrayList<Content> searchContentList(String query){
         ArrayList<Content> contentArrayList = new ArrayList<>();
         Content obj;
@@ -144,10 +192,5 @@ public class Content {
         return contentArrayList;
     }
 
-    public static String searchQuery(String course_name, String title){
-        String query = "SELECT * FROM content WHERE title LIKE ? AND course_id IN (SELECT id FROM course WHERE name LIKE ?)";
-        return query;
-    }
-*/
 
 }

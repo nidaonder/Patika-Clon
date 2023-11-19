@@ -95,6 +95,7 @@ public class OperatorGUI extends JFrame {
         loadUserModel();
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
+
         tbl_user_list.getSelectionModel().addListSelectionListener(e -> {
             try {
                 String select_user_id = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 0).toString();
@@ -120,7 +121,6 @@ public class OperatorGUI extends JFrame {
                 loadCourseModel();
             }
         });
-        // ## ModelUserList
 
         // PatikaList
         patikaMenu = new JPopupMenu();
@@ -175,7 +175,6 @@ public class OperatorGUI extends JFrame {
                 tbl_patika_list.setRowSelectionInterval(selectedRow,selectedRow);
             }
         });
-        // ## PatikaList
 
         // CourseList
         courseMenu = new JPopupMenu();
@@ -195,17 +194,14 @@ public class OperatorGUI extends JFrame {
             });
         });
 
-        deleteCourseMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Helper.confirm("sure")){
-                    int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
-                    if (Course.delete(select_id)){
-                        Helper.showMessage("done");
-                        loadCourseModel();
-                    } else {
-                        Helper.showMessage("error");
-                    }
+        deleteCourseMenu.addActionListener(e -> {
+            if (Helper.confirm("sure")){
+                int select_id = Integer.parseInt(tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString());
+                if (Course.delete(select_id)){
+                    Helper.showMessage("done");
+                    loadCourseModel();
+                } else {
+                    Helper.showMessage("error");
                 }
             }
         });
@@ -230,7 +226,6 @@ public class OperatorGUI extends JFrame {
                 tbl_course_list.setRowSelectionInterval(selected_row, selected_row);
             }
         });
-        // ## CourseList
 
         btn_user_add.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_user_name) || (Helper.isFieldEmpty(fld_user_uname) || (Helper.isFieldEmpty(fld_user_pass)))){
@@ -270,42 +265,38 @@ public class OperatorGUI extends JFrame {
             }
         });
 
-        btn_user_sh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = fld_sh_user_name.getText();
-                String uname = fld_sh_user_uname.getText();
-                String type = cmb_sh_user_type.getSelectedItem().toString();
-                String query = User.searchQuery(name, uname, type);
-                ArrayList<User> searchingUser = User.searchUserList(query);
-                loadUserModel(searchingUser);
+        // Search User
+        btn_user_sh.addActionListener(e -> {
+            String name = fld_sh_user_name.getText();
+            String uname = fld_sh_user_uname.getText();
+            String type = cmb_sh_user_type.getSelectedItem().toString();
+            String query = User.searchQuery(name, uname, type);
+            ArrayList<User> searchingUser = User.searchUserList(query);
+            loadUserModel(searchingUser);
+        });
 
-            }
+        btn_logout.addActionListener(e -> {
+            dispose();
+            LoginGUI login = new LoginGUI();
         });
-        btn_logout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                LoginGUI login = new LoginGUI();
-            }
-        });
-        btn_patika_add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Helper.isFieldEmpty(fld_patika_name)){
-                    Helper.showMessage("fill");
+
+        // Add Patika
+        btn_patika_add.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_patika_name)){
+                Helper.showMessage("fill");
+            } else {
+                if (Patika.add(fld_patika_name.getText())){
+                    Helper.showMessage("done");
+                    loadPatikaModel();
+                    loadPatikaCombo();
+                    fld_patika_name.setText(null);
                 } else {
-                    if (Patika.add(fld_patika_name.getText())){
-                        Helper.showMessage("done");
-                        loadPatikaModel();
-                        loadPatikaCombo();
-                        fld_patika_name.setText(null);
-                    } else {
-                        Helper.showMessage("error");
-                    }
+                    Helper.showMessage("error");
                 }
             }
         });
+
+        // Add Course
         btn_course_add.addActionListener(e -> {
             Item patikaItem = (Item) cmb_course_patika.getSelectedItem();
             Item userItem = (Item) cmb_course_user.getSelectedItem();

@@ -1,5 +1,6 @@
 package com.patikadev.Model;
 
+import com.mysql.cj.xdevapi.DbDocValueFactory;
 import com.patikadev.Helper.DBConnector;
 
 import java.sql.PreparedStatement;
@@ -17,6 +18,8 @@ public class Course {
 
     private Patika patika;
     private User educator;
+
+    public Course(){}
 
     public Course(int id, int user_id, int patika_id, String name, String lang) {
         this.id = id;
@@ -181,5 +184,32 @@ public class Course {
             e.printStackTrace();
         }
         return obj;
+    }
+
+    public static String searchQuery(String name){
+        String query = "SELECT * FROM course WHERE name LIKE '%{{name}}%'";
+        query = query.replace("{{name}}", name);
+        return query;
+    }
+
+    public static ArrayList<Course> searchCourseList(String query){
+        ArrayList<Course> courseArrayList = new ArrayList<>();
+        Course obj;
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()){
+                obj = new Course();
+                obj.setId(rs.getInt("id"));
+                obj.setUser_id(rs.getInt("user_id"));
+                obj.setPatika_id(rs.getInt("patika_id"));
+                obj.setName(rs.getString("name"));
+                obj.setLang(rs.getString("lang"));
+                courseArrayList.add(obj);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return courseArrayList;
     }
 }
