@@ -7,8 +7,6 @@ import com.patikadev.Model.Student;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class StudentGUI extends JFrame {
     private JPanel wrapper;
@@ -19,6 +17,8 @@ public class StudentGUI extends JFrame {
     private JPanel pnl_patika_list;
     private JTable tbl_patika_list;
     private JScrollPane scrl_patika_list;
+    private JTextField fld_select_patika;
+    private JButton btn_show_course;
     private DefaultTableModel mdl_patika_list;
     private Object[] row_patika_list;
 
@@ -50,6 +50,23 @@ public class StudentGUI extends JFrame {
             row[1] = patika.getName();
             mdl_patika_list.addRow(row);
         }
+
+        tbl_patika_list.getSelectionModel().addListSelectionListener(e -> {
+            try {
+                String select_patika_id = tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString();
+                fld_select_patika.setText(select_patika_id);
+            } catch (Exception exception) {}
+        });
+
+        // Show Button
+        btn_show_course.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_select_patika)){
+                Helper.showMessage("Please select a patika!");
+            } else {
+                int select_patika_id = Integer.parseInt(fld_select_patika.getText());
+                CourseGUI course = new CourseGUI(Patika.getFetch(select_patika_id));
+            }
+        });
 
         // Logout Button
         btn_logout.addActionListener(e -> {

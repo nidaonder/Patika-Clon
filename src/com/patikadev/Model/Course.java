@@ -1,6 +1,5 @@
 package com.patikadev.Model;
 
-import com.mysql.cj.xdevapi.DbDocValueFactory;
 import com.patikadev.Helper.DBConnector;
 
 import java.sql.PreparedStatement;
