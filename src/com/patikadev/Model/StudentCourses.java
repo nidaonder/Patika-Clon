@@ -68,7 +68,7 @@ public class StudentCourses {
         return studentCourses;
     }
 
-    public static boolean add(int id, String name, int studentId){
+    public static boolean add(String name, int studentId){
         String query = "INSERT INTO student_courses (name, student_id) VALUES (?,?)";
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);

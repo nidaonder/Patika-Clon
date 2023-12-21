@@ -51,6 +51,7 @@ public class StudentGUI extends JFrame {
             mdl_patika_list.addRow(row);
         }
 
+        // Select patika.
         tbl_patika_list.getSelectionModel().addListSelectionListener(e -> {
             try {
                 String select_patika_id = tbl_patika_list.getValueAt(tbl_patika_list.getSelectedRow(), 0).toString();

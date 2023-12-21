@@ -1,8 +1,10 @@
 package com.patikadev.View;
 
 import com.patikadev.Helper.Config;
+import com.patikadev.Helper.Helper;
 import com.patikadev.Model.Course;
 import com.patikadev.Model.Patika;
+import com.patikadev.Model.StudentCourses;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +16,8 @@ public class CourseGUI extends JFrame{
     private JLabel lbl_patika_name;
     private JScrollPane scrl_course_list;
     private JTable tbl_course_list;
+    private JButton btn_select_signup;
+    private JTextField fld_course_id;
     private DefaultTableModel mdl_course_list;
     private Object[] row_course_list;
 
@@ -66,6 +70,21 @@ public class CourseGUI extends JFrame{
         tbl_course_list.setModel(mdl_course_list);
         tbl_course_list.getTableHeader().setReorderingAllowed(false);
 
+        // Select
+        tbl_course_list.getSelectionModel().addListSelectionListener(e -> {
+            try {
+                String select_course_id = tbl_course_list.getValueAt(tbl_course_list.getSelectedRow(), 0).toString();
+                fld_course_id.setText(select_course_id);
+            } catch (Exception exception){}
+        });
 
+        // Select And Sign Up Button;
+        btn_select_signup.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_course_id)){
+                Helper.showMessage("Please select a course!");
+            } else {
+                int select_course_id = Integer.parseInt(fld_course_id.getText());
+            }
+        });
     }
 }
